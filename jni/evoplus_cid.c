@@ -8,7 +8,8 @@
 #include "mmc.h"
 
 #define CID_SIZE 16
-@@ -114,7 +117,7 @@ int parse_serial(const char *str) {
+@@ -114,7 +117,7 @@ 
+int parse_serial(const char *str) {
 	return (int)val;
 }
 
@@ -17,7 +18,8 @@ int main(int argc, const char **argv) {
 	int fd, ret, i, len;
 	unsigned char cid[CID_SIZE] = {0};
 
-@@ -129,21 +132,21 @@ void main(int argc, const char **argv) {
+@@ -129,21 +132,21 @@
+	void main(int argc, const char **argv) {
 		printf("  and will be applied to the supplied cid before writing\n");
 		printf("\n");
 		printf("Warning: use at own risk!\n");
@@ -42,7 +44,8 @@ int main(int argc, const char **argv) {
 		}
 	}
 
-@@ -161,7 +164,7 @@ void main(int argc, const char **argv) {
+@@ -161,7 +164,7 @@ 
+	void main(int argc, const char **argv) {
 	fd = open(argv[1], O_RDWR);
 	if (fd < 0){
 		printf("Unable to open device %s\n", argv[1]);
@@ -51,7 +54,8 @@ int main(int argc, const char **argv) {
 	}
 
 	// unlock card
-@@ -177,6 +180,5 @@ void main(int argc, const char **argv) {
+@@ -177,6 +180,5 @@ 
+	void main(int argc, const char **argv) {
 		}
 	}
 	close(fd);

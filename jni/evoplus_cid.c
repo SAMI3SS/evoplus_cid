@@ -37,8 +37,10 @@ int cid_backdoor(int fd)
 	 } 
 		{
 			printf("Unlock command failed.\n");
-		 else {
+		 else 
+            {
 			ret = mmc_movi_vendor_cmd(0x00DECCEE, fd);
+            }
 			if (ret) 
 			{
 				printf("Failed to exit vendor mode.\n");

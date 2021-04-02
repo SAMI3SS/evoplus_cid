@@ -182,7 +182,7 @@ len = strlen(argv[2]);
 		}
 	}
 	close(fd);
-    return 0;
+    
 
 
 

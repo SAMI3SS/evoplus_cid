@@ -95,7 +95,7 @@ unsigned char crc7(const unsigned char data[], int len) {
 }
 
 int parse_serial(const char *str) {
-    ong val;
+    long val;
 	// accept decimal or hex, but not octal
 	if ((strlen(str) > 2) && (str[0] == '0') &&
 		(((str[1] == 'x')) || ((str[1] == 'X')))) {
@@ -108,7 +108,8 @@ int parse_serial(const char *str) {
     
 }
 
-int main(int argc, const char **argv){
+int main(int argc, const char **argv)
+{
     int fd, ret, i, len;
 	unsigned char cid[CID_SIZE] = {0};
 
@@ -132,7 +133,7 @@ int main(int argc, const char **argv){
 len = strlen(argv[2]);
 	if (len != 30 && len != 32){
         printf("CID should be 30 or 32 chars long!\n");
-		return;
+		
 		return -1;
 
     }
@@ -143,7 +144,7 @@ len = strlen(argv[2]);
 		ret = sscanf(&argv[2][i*2], "%2hhx", &cid[i]);
 		if (!ret){
 			printf("CID should be hex (without 0x prefix)!\n");
-			return;
+			
 			return -1;
 		}
 	}
@@ -181,8 +182,7 @@ len = strlen(argv[2]);
 		}
 	}
 	close(fd);
-
-	return 0;
+    return 0;
 
 
 

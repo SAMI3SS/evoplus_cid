@@ -34,7 +34,7 @@ int cid_backdoor(int fd)
 	 	{
 		ret = mmc_movi_vendor_cmd(0xEF50, fd);
 		if (ret)
-	 } 
+	    } 
 		{
 			printf("Unlock command failed.\n");
 		 else 
@@ -47,7 +47,7 @@ int cid_backdoor(int fd)
 			}
 		}
 	}
-	return ret;
+	return (ret);
 int program_cid(int fd, const unsigned char *cid) 
 {
 	int ret;
@@ -118,7 +118,7 @@ int parse_serial(const char *str)
 	return (int)val;
 }
 
-void main(int argc, const char **argv) 
+
 {
 int main(int argc, const char **argv) 
 {
@@ -137,7 +137,7 @@ int main(int argc, const char **argv)
 		printf("  and will be applied to the supplied cid before writing\n");
 		printf("\n");
 		printf("Warning: use at own risk!\n");
-		return;
+		
 		return -1;
 	}
 
@@ -145,7 +145,7 @@ int main(int argc, const char **argv)
 	if (len != 30 && len != 32) 
 	{
 		printf("CID should be 30 or 32 chars long!\n");
-		return;
+		
 		return -1;
 	}
 
@@ -155,7 +155,7 @@ int main(int argc, const char **argv)
 		ret = sscanf(&argv[2][i*2], "%2hhx", &cid[i]);
 		if (!ret){
 			printf("CID should be hex (without 0x prefix)!\n");
-			return;
+			
 			return -1;
 		
 		}
@@ -175,7 +175,7 @@ int main(int argc, const char **argv)
 	fd = open(argv[1], O_RDWR);
 	if (fd < 0){
 		printf("Unable to open device %s\n", argv[1]);
-		return;
+		
 		return -1;
 	}
 

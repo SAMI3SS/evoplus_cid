@@ -10,7 +10,8 @@
 #define CID_SIZE 16
 #define PROGRAM_CID_OPCODE 26
 #define SAMSUNG_VENDOR_OPCODE 62
-int mmc_movi_vendor_cmd(unsigned int arg, int fd) {
+int mmc_movi_vendor_cmd(unsigned int arg, int fd) 
+{
 	int ret = 0;
 	struct mmc_ioc_cmd idata = {0};
 	idata.data_timeout_ns = 0x10000000;
@@ -21,25 +22,31 @@ int mmc_movi_vendor_cmd(unsigned int arg, int fd) {
 	ret = ioctl(fd, MMC_IOC_CMD, &idata);
 	return ret;
 }
-int cid_backdoor(int fd) {
+int cid_backdoor(int fd) 
+	{
 	int ret;
 	ret = mmc_movi_vendor_cmd(0xEFAC62EC, fd);
-	if (ret) {
+	if (ret)
+	} {
 		printf("Failed to enter vendor mode. Genuine Samsung Evo Plus?\n");
-	} else {
+	 else 
+	 	{
 		ret = mmc_movi_vendor_cmd(0xEF50, fd);
-		if (ret) {
+		if (ret)
+	 } 
+		{
 			printf("Unlock command failed.\n");
-		} else {
+		 else {
 			ret = mmc_movi_vendor_cmd(0x00DECCEE, fd);
-			if (ret) {
+			if (ret) 
+			{
 				printf("Failed to exit vendor mode.\n");
 			}
 		}
 	}
 	return ret;
-}
-int program_cid(int fd, const unsigned char *cid) {
+int program_cid(int fd, const unsigned char *cid) 
+{
 	int ret;
 	struct mmc_ioc_cmd idata = {0};
 	idata.data_timeout_ns = 0x10000000;
@@ -51,32 +58,40 @@ int program_cid(int fd, const unsigned char *cid) {
 	idata.blocks = 1;
 	idata.data_ptr = (__u64)cid;
 	ret = ioctl(fd, MMC_IOC_CMD, &idata);
-	if (ret) {
+	if (ret) 
+	{
 		printf("Success! Remove and reinsert SD card to check new CID.\n");
 	}
 	return ret;
 }
-void show_cid(const unsigned char *cid) {
+void show_cid(const unsigned char *cid) 
+{
 	int i;
-	for (i = 0; i < CID_SIZE; i++){
+	for (i = 0; i < CID_SIZE; i++)
+	{
 		printf("%02x", cid[i]);
 	}
 	printf("\n");
 }
-unsigned char crc7(const unsigned char data[], int len) {
+unsigned char crc7(const unsigned char data[], int len) 
+{
 	int count;
 	unsigned char crc = 0;
-	for (count = 0; count <= len; count++) {
+	for (count = 0; count <= len; count++) 
+	{
 		unsigned char dat;
 		unsigned char bits;
-		if (count == len) {
+		if (count == len) 
+		{
 			dat = 0;
 			bits = 7;
-		} else {
+		} else 
+		{
 			dat = data[count];
 			bits = 8;
 		}
-		for (; bits > 0; bits--) {
+		for (; bits > 0; bits--) 
+		{
 			crc = (crc << 1) + ( (dat & 0x80) ? 1 : 0 );
 			if (crc & 0x80) crc ^= 0x09;
 			dat <<= 1;
@@ -85,24 +100,30 @@ unsigned char crc7(const unsigned char data[], int len) {
 	}
 	return ((crc << 1) + 1);
 }
-int parse_serial(const char *str) {
+int parse_serial(const char *str) 
+{
 	long val;
 	// accept decimal or hex, but not octal
 	if ((strlen(str) > 2) && (str[0] == '0') &&
-		(((str[1] == 'x')) || ((str[1] == 'X')))) {
+		(((str[1] == 'x')) || ((str[1] == 'X')))) 
+	{
 		val = strtol(str, NULL, 16);
-	} else {
+	} else 
+	{
 		val = strtol(str, NULL, 10);
 	}
 	return (int)val;
 }
 
-void main(int argc, const char **argv) {
-int main(int argc, const char **argv) {
+void main(int argc, const char **argv) 
+{
+int main(int argc, const char **argv) 
+{
 	int fd, ret, i, len;
 	unsigned char cid[CID_SIZE] = {0};
 
-	if (argc != 3 && argc != 4) {
+	if (argc != 3 && argc != 4) 
+	{
 		printf("Usage: ./evoplus_cid <device> <cid> [serial]\n");
 		printf("device - sd card block device e.g. /dev/block/mmcblk1\n");
 		printf("cid - new cid, must be in hex (without 0x prefix)\n");
@@ -118,28 +139,33 @@ int main(int argc, const char **argv) {
 	}
 
 	len = strlen(argv[2]);
-	if (len != 30 && len != 32) {
+	if (len != 30 && len != 32) 
+	{
 		printf("CID should be 30 or 32 chars long!\n");
 		return;
 		return -1;
 	}
 
 	// parse cid
-	for (i = 0; i < (len/2); i++){
+	for (i = 0; i < (len/2); i++)
+	{
 		ret = sscanf(&argv[2][i*2], "%2hhx", &cid[i]);
 		if (!ret){
 			printf("CID should be hex (without 0x prefix)!\n");
 			return;
 			return -1;
+		
 		}
 	}
 
 	// incorporate optional serial number
-	if (argc == 4) {
+	if (argc == 4) 
+	{
 		*((int*)&cid[9]) = htonl(parse_serial(argv[3]));
 	}
 	// calculate checksum if required
-	if (len != 32 || argc == 4) {
+	if (len != 32 || argc == 4) 
+	{
 		cid[15] = crc7(cid, 15);
 	}
 	// open device
@@ -158,7 +184,8 @@ int main(int argc, const char **argv) {
 		printf("Writing new CID: ");
 		show_cid(cid);
 		ret = program_cid(fd, cid);
-		if (!ret){
+		if (!ret)
+		{
 			printf("Success! Remove and reinsert SD card to check new CID.\n");
 		}
 	}

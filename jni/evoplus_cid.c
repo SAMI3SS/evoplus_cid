@@ -1,31 +1,28 @@
+#include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 #include "mmc.h"
 
 #define CID_SIZE 16
 #define PROGRAM_CID_OPCODE 26
 #define SAMSUNG_VENDOR_OPCODE 62
-
 int mmc_movi_vendor_cmd(unsigned int arg, int fd) {
 	int ret = 0;
 	struct mmc_ioc_cmd idata = {0};
-
 	idata.data_timeout_ns = 0x10000000;
 	idata.write_flag = 1;
 	idata.opcode = SAMSUNG_VENDOR_OPCODE;
 	idata.arg = arg;
 	idata.flags = MMC_RSP_R1B | MMC_CMD_AC;
-
 	ret = ioctl(fd, MMC_IOC_CMD, &idata);
-
 	return ret;
 }
-
 int cid_backdoor(int fd) {
 	int ret;
-
 	ret = mmc_movi_vendor_cmd(0xEFAC62EC, fd);
 	if (ret) {
 		printf("Failed to enter vendor mode. Genuine Samsung Evo Plus?\n");
@@ -40,14 +37,11 @@ int cid_backdoor(int fd) {
 			}
 		}
 	}
-
 	return ret;
 }
-
 int program_cid(int fd, const unsigned char *cid) {
 	int ret;
 	struct mmc_ioc_cmd idata = {0};
-
 	idata.data_timeout_ns = 0x10000000;
 	idata.write_flag = 1;
 	idata.opcode = PROGRAM_CID_OPCODE;
@@ -56,15 +50,12 @@ int program_cid(int fd, const unsigned char *cid) {
 	idata.blksz = CID_SIZE;
 	idata.blocks = 1;
 	idata.data_ptr = (__u64)cid;
-
 	ret = ioctl(fd, MMC_IOC_CMD, &idata);
 	if (ret) {
 		printf("Success! Remove and reinsert SD card to check new CID.\n");
 	}
-
 	return ret;
 }
-
 void show_cid(const unsigned char *cid) {
 	int i;
 	for (i = 0; i < CID_SIZE; i++){
@@ -72,12 +63,9 @@ void show_cid(const unsigned char *cid) {
 	}
 	printf("\n");
 }
-
 unsigned char crc7(const unsigned char data[], int len) {
-
 	int count;
 	unsigned char crc = 0;
-
 	for (count = 0; count <= len; count++) {
 		unsigned char dat;
 		unsigned char bits;
@@ -95,14 +83,10 @@ unsigned char crc7(const unsigned char data[], int len) {
 		}
 	   crc &= 0x7f;
 	}
-
 	return ((crc << 1) + 1);
 }
-
 int parse_serial(const char *str) {
-
 	long val;
-
 	// accept decimal or hex, but not octal
 	if ((strlen(str) > 2) && (str[0] == '0') &&
 		(((str[1] == 'x')) || ((str[1] == 'X')))) {
@@ -110,11 +94,11 @@ int parse_serial(const char *str) {
 	} else {
 		val = strtol(str, NULL, 10);
 	}
-
 	return (int)val;
 }
 
 void main(int argc, const char **argv) {
+int main(int argc, const char **argv) {
 	int fd, ret, i, len;
 	unsigned char cid[CID_SIZE] = {0};
 
@@ -130,12 +114,14 @@ void main(int argc, const char **argv) {
 		printf("\n");
 		printf("Warning: use at own risk!\n");
 		return;
+		return -1;
 	}
 
 	len = strlen(argv[2]);
 	if (len != 30 && len != 32) {
 		printf("CID should be 30 or 32 chars long!\n");
 		return;
+		return -1;
 	}
 
 	// parse cid
@@ -144,6 +130,7 @@ void main(int argc, const char **argv) {
 		if (!ret){
 			printf("CID should be hex (without 0x prefix)!\n");
 			return;
+			return -1;
 		}
 	}
 
@@ -151,17 +138,16 @@ void main(int argc, const char **argv) {
 	if (argc == 4) {
 		*((int*)&cid[9]) = htonl(parse_serial(argv[3]));
 	}
-
 	// calculate checksum if required
 	if (len != 32 || argc == 4) {
 		cid[15] = crc7(cid, 15);
 	}
-
 	// open device
 	fd = open(argv[1], O_RDWR);
 	if (fd < 0){
 		printf("Unable to open device %s\n", argv[1]);
 		return;
+		return -1;
 	}
 
 	// unlock card
@@ -178,4 +164,5 @@ void main(int argc, const char **argv) {
 	}
 	close(fd);
 
+	return 0;
 }

@@ -27,7 +27,8 @@ int cid_backdoor(int fd)
 	int ret;
 	ret = mmc_movi_vendor_cmd(0xEFAC62EC, fd);
 	if (ret)
-	} {
+	} 
+	{
 		printf("Failed to enter vendor mode. Genuine Samsung Evo Plus?\n");
 	 else 
 	 	{

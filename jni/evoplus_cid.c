@@ -30,12 +30,11 @@ int cid_backdoor(int fd)
 	 
 	
 		printf("Failed to enter vendor mode. Genuine Samsung Evo Plus?\n");
-	 else 
-	 	{
+	 else {
 		ret = mmc_movi_vendor_cmd(0xEF50, fd);
 		if (ret)
 	    } 
-		{
+		
 			printf("Unlock command failed.\n");
 		 else 
             {
@@ -45,10 +44,10 @@ int cid_backdoor(int fd)
 			{
 				printf("Failed to exit vendor mode.\n");
 			}
-		}
+        }
 	}
 	return ret;
-int program_cid(int fd, const unsigned char *cid) 
+    int program_cid(int fd, const unsigned char *cid) 
 {
 	int ret;
 	struct mmc_ioc_cmd idata = {0};

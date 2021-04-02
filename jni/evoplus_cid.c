@@ -148,7 +148,7 @@ len = strlen(argv[2]);
     }
 
 
-// parse cid
+ // parse cid
 	for (i = 0; i < (len/2); i++){
 		ret = sscanf(&argv[2][i*2], "%2hhx", &cid[i]);
 		if (!ret){
@@ -158,7 +158,7 @@ len = strlen(argv[2]);
 		}
 	}
 
-// incorporate optional serial number
+ // incorporate optional serial number
 	if (argc == 4)
 
     {
@@ -191,6 +191,7 @@ len = strlen(argv[2]);
 			printf("Success! Remove and reinsert SD card to check new CID.\n");
 		}
 	}
+}
 	
     
 

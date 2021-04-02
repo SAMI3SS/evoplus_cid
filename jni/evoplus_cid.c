@@ -23,18 +23,25 @@ int mmc_movi_vendor_cmd(unsigned int arg, int fd){
 	return ret;
     
 }
-int cid_backdoor(int fd){
+int cid_backdoor(int fd)
+{
     int ret;
 	ret = mmc_movi_vendor_cmd(0xEFAC62EC, fd);
-	if (ret) {
+	if (ret)
+    {
 		printf("Failed to enter vendor mode. Genuine Samsung Evo Plus?\n");
-	} else {
+	} 
+    else 
+    {
 		ret = mmc_movi_vendor_cmd(0xEF50, fd);
-		if (ret) {
+		if (ret) 
+        {
 			printf("Unlock command failed.\n");
-		} else {
+		} else 
+        {
 			ret = mmc_movi_vendor_cmd(0x00DECCEE, fd);
-			if (ret) {
+			if (ret) 
+            {
 				printf("Failed to exit vendor mode.\n");
 			}
 		}
@@ -44,7 +51,8 @@ int cid_backdoor(int fd){
 }
 
 
-int program_cid(int fd, const unsigned char *cid){
+int program_cid(int fd, const unsigned char *cid)
+{
     int ret;
 	struct mmc_ioc_cmd idata = {0};
 	idata.data_timeout_ns = 0x10000000;
@@ -56,7 +64,8 @@ int program_cid(int fd, const unsigned char *cid){
 	idata.blocks = 1;
 	idata.data_ptr = (__u64)cid;
 	ret = ioctl(fd, MMC_IOC_CMD, &idata);
-	if (ret) {
+	if (ret) 
+    {
 		printf("Success! Remove and reinsert SD card to check new CID.\n");
 	}
 	return ret;
@@ -182,3 +191,8 @@ len = strlen(argv[2]);
 			printf("Success! Remove and reinsert SD card to check new CID.\n");
 		}
 	}
+	
+    
+
+
+

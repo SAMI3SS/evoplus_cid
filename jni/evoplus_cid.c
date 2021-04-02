@@ -151,7 +151,7 @@ len = strlen(argv[2]);
 
 // incorporate optional serial number
 	if (argc == 4)
-{ 
+
     {
 		*((int*)&cid[9]) = htonl(parse_serial(argv[3]));
 	}
@@ -182,8 +182,3 @@ len = strlen(argv[2]);
 			printf("Success! Remove and reinsert SD card to check new CID.\n");
 		}
 	}
-	close(fd);
-    
-}
-
-

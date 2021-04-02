@@ -150,7 +150,8 @@ len = strlen(argv[2]);
 	}
 
 // incorporate optional serial number
-	if (argc == 4) 
+	if (argc == 4)
+{ 
     {
 		*((int*)&cid[9]) = htonl(parse_serial(argv[3]));
 	}
@@ -183,6 +184,6 @@ len = strlen(argv[2]);
 	}
 	close(fd);
     
-
+}
 
 
